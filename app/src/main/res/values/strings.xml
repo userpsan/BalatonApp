@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">BalatonApp</string>
+    <string name="my_image_description">Main header picture</string>
+    <string name="loginOrRegisterText">Jelentkezzen be vagy regisztráljon az alkalmazás használatához!</string>
+    <string name="email">E-mail cím</string>
+    <string name="password">Jelszó</string>
+    <string name="login">Bejelentkezés</string>
+    <string name="registration">Regisztráció</string>
+    <string name="cim">Üdvözöljük!</string>
+    <string name="passwordAgain">Jelszó újra</string>
+    <string name="fullName">Felhasználónév</string>
+    <string name="registration_title">Regisztráció</string>
+    <string name="welcome">Üdvözlünk a BalatonAppban!</string>
+    <string name="in_progress">Fejlesztés alatt</string>
+    <string name="logout">Kijelentkezés</string>
+    <string name="back">Vissza</string>
+    <string name="registration_button_description">Regisztáció gomb</string>
+    <string name="back_button_description">Vissza a főoldalra</string>
+
+</resources>

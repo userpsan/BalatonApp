@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "489288246296",
+    "project_id": "balatonapp-d29c6",
+    "storage_bucket": "balatonapp-d29c6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489288246296:android:c6bc8e8ddae09f2850cf6d",
+        "android_client_info": {
+          "package_name": "com.example.balatonapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489288246296-70rq8h3eelajrt2nm7o6fvo93grue4as.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.balatonapp",
+            "certificate_hash": "92490d755096a258b4700c165bd2d81ff9c07c0c"
+          }
+        },
+        {
+          "client_id": "489288246296-ds2qu2i2ks673qfh7gg0u5cppme6ov94.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy0_zm_dGrbBrLSXU50nNjlAvxhe7in7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489288246296-ds2qu2i2ks673qfh7gg0u5cppme6ov94.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
