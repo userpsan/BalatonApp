@@ -22,7 +22,6 @@ import com.example.balatonapp.data.Sight;
 import com.example.balatonapp.firestore.Callback;
 import com.example.balatonapp.firestore.FirestoreService;
 import com.example.balatonapp.ui.events.EventViewModel;
-import com.example.balatonapp.ui.news.NewsActivity;
 import com.example.balatonapp.ui.sights.SightViewModel;
 import com.example.balatonapp.ui.sights.SightsActivity;
 import com.example.balatonapp.ui.events.EventsActivity;
@@ -136,9 +135,6 @@ public class FavoritesActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.menu_events) {
             startActivity(new Intent(this, EventsActivity.class));
-            return true;
-        } else if (id == R.id.menu_news) {
-            startActivity(new Intent(this, NewsActivity.class));
             return true;
         } else if (id == R.id.menu_logout) {
             FirebaseAuth.getInstance().signOut();

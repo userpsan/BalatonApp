@@ -12,13 +12,20 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.balatonapp.adapter.NewsAdapter;
 import com.example.balatonapp.ui.events.EventsActivity;
-import com.example.balatonapp.ui.news.NewsActivity;
+import com.example.balatonapp.FavoritesActivity;
 import com.example.balatonapp.ui.sights.SightsActivity;
+import com.example.balatonapp.ui.news.NewsViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
+
+    private NewsViewModel newsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +35,14 @@ public class HomeActivity extends AppCompatActivity {
         setupToolbar();
         animateHeader();
         setupLogoutButton();
+        setupNewsRecyclerView();
     }
 
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("");  // Üres cím
+            getSupportActionBar().setTitle("Főoldal");
         }
     }
 
@@ -57,6 +65,16 @@ public class HomeActivity extends AppCompatActivity {
         finish();
     }
 
+    private void setupNewsRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewNews);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        NewsAdapter adapter = new NewsAdapter();
+        recyclerView.setAdapter(adapter);
+
+        newsViewModel = new ViewModelProvider(this).get(NewsViewModel.class);
+        newsViewModel.getAllNews().observe(this, adapter::submitList);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -73,9 +91,6 @@ public class HomeActivity extends AppCompatActivity {
         } else if (id == R.id.menu_events) {
             startActivity(new Intent(this, EventsActivity.class));
             return true;
-        } else if (id == R.id.menu_news) {
-            startActivity(new Intent(this, NewsActivity.class));
-            return true;
         } else if (id == R.id.menu_favorites) {
             startActivity(new Intent(this, FavoritesActivity.class));
             return true;
@@ -86,5 +101,4 @@ public class HomeActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 }

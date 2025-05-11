@@ -14,7 +14,6 @@
 
         <activity android:name=".ui.sights.SightsActivity" />
         <activity android:name=".ui.events.EventsActivity" />
-        <activity android:name=".ui.news.NewsActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".FavoritesActivity" />

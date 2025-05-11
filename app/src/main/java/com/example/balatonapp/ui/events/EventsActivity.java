@@ -2,12 +2,10 @@ package com.example.balatonapp.ui.events;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,7 +17,6 @@ import com.example.balatonapp.HomeActivity;
 import com.example.balatonapp.MainActivity;
 import com.example.balatonapp.R;
 import com.example.balatonapp.adapter.EventAdapter;
-import com.example.balatonapp.ui.news.NewsActivity;
 import com.example.balatonapp.ui.sights.SightsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -65,8 +62,6 @@ public class EventsActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SightsActivity.class));
             } else if (id == R.id.menu_events) {
                 return true; // már itt vagyunk
-            } else if (id == R.id.menu_news) {
-                startActivity(new Intent(this, NewsActivity.class));
             } else if (id == R.id.menu_favorites) {
                 startActivity(new Intent(this, FavoritesActivity.class));
             } else if (id == R.id.menu_logout) {
