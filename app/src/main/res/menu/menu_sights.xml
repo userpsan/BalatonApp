@@ -9,8 +9,8 @@
         android:title="@string/events"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_news"
-        android:title="@string/news"
+        android:id="@+id/menu_favorites"
+        android:title="Kedvencek"
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_logout"

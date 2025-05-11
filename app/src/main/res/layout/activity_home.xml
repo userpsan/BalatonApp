@@ -13,9 +13,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/transparent"
-        app:popupTheme="@style/TransparentMenuStyle"
-        app:titleTextColor="@android:color/black" />
+        android:background="@color/button_color"
+        app:titleTextColor="@android:color/white"
+        app:title="Hírek" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewNews"
@@ -25,5 +25,4 @@
         android:clipToPadding="false"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
 </LinearLayout>

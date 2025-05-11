@@ -17,11 +17,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/menu_news"
-        android:title="@string/news"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/menu_logout"
         android:title="@string/logout"
         app:showAsAction="never" />

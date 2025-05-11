@@ -1,17 +1,12 @@
 package com.example.balatonapp;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,130 +14,98 @@ import com.example.balatonapp.adapter.EventAdapter;
 import com.example.balatonapp.adapter.SightAdapter;
 import com.example.balatonapp.data.Event;
 import com.example.balatonapp.data.Sight;
-import com.example.balatonapp.firestore.Callback;
-import com.example.balatonapp.firestore.FirestoreService;
-import com.example.balatonapp.ui.events.EventViewModel;
-import com.example.balatonapp.ui.sights.SightViewModel;
-import com.example.balatonapp.ui.sights.SightsActivity;
-import com.example.balatonapp.ui.events.EventsActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class FavoritesActivity extends AppCompatActivity {
 
-    private RecyclerView sightsRecycler, eventsRecycler;
-    private SightAdapter sightAdapter;
-    private EventAdapter eventAdapter;
+    private RecyclerView eventsRecyclerView;
+    private RecyclerView sightsRecyclerView;
     private TextView emptyView;
 
-    private FirestoreService firestoreService;
-    private SightViewModel sightViewModel;
-    private EventViewModel eventViewModel;
+    private EventAdapter eventsAdapter;
+    private SightAdapter sightsAdapter;
+
+    private final List<Event> favoriteEvents = new ArrayList<>();
+    private final List<Sight> favoriteSights = new ArrayList<>();
+
+    private FirebaseFirestore db;
+    private String currentUserUid;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
 
-        // Toolbar beállítása
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Kedvencek");
-        }
+        setupToolbar();
 
-        sightsRecycler = findViewById(R.id.sightsRecyclerView);
-        eventsRecycler = findViewById(R.id.eventsRecyclerView);
         emptyView = findViewById(R.id.emptyView);
+        eventsRecyclerView = findViewById(R.id.eventsRecyclerView);
+        sightsRecyclerView = findViewById(R.id.sightsRecyclerView);
 
-        firestoreService = new FirestoreService();
-        sightViewModel = new ViewModelProvider(this).get(SightViewModel.class);
-        eventViewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        db = FirebaseFirestore.getInstance();
+        currentUserUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        sightAdapter = new SightAdapter();
-        eventAdapter = new EventAdapter();
-
-        sightsRecycler.setLayoutManager(new LinearLayoutManager(this));
-        eventsRecycler.setLayoutManager(new LinearLayoutManager(this));
-
-        sightsRecycler.setAdapter(sightAdapter);
-        eventsRecycler.setAdapter(eventAdapter);
-
+        setupRecyclerViews();
         loadFavorites();
     }
 
-    private void loadFavorites() {
-        firestoreService.getFavorites("sights", new Callback<Set<String>>() {
-            @Override
-            public void onResult(Set<String> sightIds) {
-                sightViewModel.getAllSights().observe(FavoritesActivity.this, sights -> {
-                    List<Sight> filtered = new ArrayList<>();
-                    for (Sight s : sights) {
-                        if (sightIds.contains(s.getImageName())) {
-                            filtered.add(s);
-                        }
-                    }
-                    sightAdapter.submitList(filtered);
-                    toggleEmptyView(filtered, null);
-                });
-            }
-        });
-
-        firestoreService.getFavorites("events", new Callback<Set<String>>() {
-            @Override
-            public void onResult(Set<String> eventIds) {
-                eventViewModel.getAllEvents().observe(FavoritesActivity.this, events -> {
-                    List<Event> filtered = new ArrayList<>();
-                    for (Event e : events) {
-                        if (eventIds.contains(e.getImageName())) {
-                            filtered.add(e);
-                        }
-                    }
-                    eventAdapter.submitList(filtered);
-                    toggleEmptyView(null, filtered);
-                });
-            }
-        });
-    }
-
-    private void toggleEmptyView(List<Sight> sights, List<Event> events) {
-        if ((sights != null && !sights.isEmpty()) || (events != null && !events.isEmpty())) {
-            emptyView.setVisibility(View.GONE);
-        } else {
-            emptyView.setVisibility(View.VISIBLE);
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle("Kedvencek");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
-    // Menü megjelenítése
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_favorites, menu);
-        return true;
+    private void setupRecyclerViews() {
+        eventsAdapter = new EventAdapter();
+        sightsAdapter = new SightAdapter();
+
+        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        eventsRecyclerView.setAdapter(eventsAdapter);
+
+        sightsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        sightsRecyclerView.setAdapter(sightsAdapter);
     }
 
-    // Menüelemek kezelése
+    private void loadFavorites() {
+        db.collection("favorites")
+                .whereEqualTo("userId", currentUserUid)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    favoriteEvents.clear();
+                    favoriteSights.clear();
+
+                    for (var doc : queryDocumentSnapshots) {
+                        String type = doc.getString("type");
+                        if ("event".equals(type)) {
+                            Event event = doc.toObject(Event.class);
+                            favoriteEvents.add(event);
+                        } else if ("sight".equals(type)) {
+                            Sight sight = doc.toObject(Sight.class);
+                            favoriteSights.add(sight);
+                        }
+                    }
+
+                    eventsAdapter.submitList(new ArrayList<>(favoriteEvents));
+                    sightsAdapter.submitList(new ArrayList<>(favoriteSights));
+
+                    boolean isEmpty = favoriteEvents.isEmpty() && favoriteSights.isEmpty();
+                    emptyView.setVisibility(isEmpty ? TextView.VISIBLE : TextView.GONE);
+                });
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.menu_home) {
-            startActivity(new Intent(this, HomeActivity.class));
-            return true;
-        } else if (id == R.id.menu_sights) {
-            startActivity(new Intent(this, SightsActivity.class));
-            return true;
-        } else if (id == R.id.menu_events) {
-            startActivity(new Intent(this, EventsActivity.class));
-            return true;
-        } else if (id == R.id.menu_logout) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, MainActivity.class));
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
