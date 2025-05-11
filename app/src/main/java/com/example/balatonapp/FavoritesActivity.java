@@ -2,6 +2,7 @@ package com.example.balatonapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.balatonapp.adapter.EventAdapter;
 import com.example.balatonapp.adapter.SightAdapter;
 import com.example.balatonapp.data.Event;
+import com.example.balatonapp.data.FavoriteItem;
 import com.example.balatonapp.data.Sight;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -50,8 +53,14 @@ public class FavoritesActivity extends AppCompatActivity {
         eventsRecyclerView = findViewById(R.id.eventsRecyclerView);
         sightsRecyclerView = findViewById(R.id.sightsRecyclerView);
 
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            finish();
+            return;
+        }
+
+        currentUserUid = currentUser.getUid();
         db = FirebaseFirestore.getInstance();
-        currentUserUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         setupRecyclerViews();
         loadFavorites();
@@ -60,18 +69,15 @@ public class FavoritesActivity extends AppCompatActivity {
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Kedvencek");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Kedvencek");
-
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.menu_favorites);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
     private void setupRecyclerViews() {
         eventsAdapter = new EventAdapter();
-        sightsAdapter = new SightAdapter();
+        sightsAdapter = new SightAdapter(true);
 
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventsRecyclerView.setAdapter(eventsAdapter);
@@ -89,28 +95,46 @@ public class FavoritesActivity extends AppCompatActivity {
                     favoriteSights.clear();
 
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        String type = doc.getString("type");
-                        if ("event".equals(type)) {
-                            Event event = doc.toObject(Event.class);
-                            if (event != null) favoriteEvents.add(event);
-                        } else if ("sight".equals(type)) {
-                            Sight sight = doc.toObject(Sight.class);
-                            if (sight != null) favoriteSights.add(sight);
+                        FavoriteItem item = doc.toObject(FavoriteItem.class);
+                        if (item == null || item.getType() == null) continue;
+
+                        if (item.getType().equals("event")) {
+                            // Konvertáljuk a dátumot (long -> String)
+                            String formattedDate = DateFormat.format("yyyy.MM.dd", item.getDate()).toString();
+
+                            Event event = new Event(
+                                    item.getTitle(),
+                                    item.getDescription(),
+                                    formattedDate,
+                                    item.getLocation(),
+                                    item.getImageName()
+                            );
+                            favoriteEvents.add(event);
+
+                        } else if (item.getType().equals("sight")) {
+                            Sight sight = new Sight(
+                                    item.getTitle(),
+                                    item.getDescription(),
+                                    item.getLocation(),
+                                    item.getImageName()
+                            );
+                            favoriteSights.add(sight);
                         }
                     }
 
                     eventsAdapter.submitList(new ArrayList<>(favoriteEvents));
                     sightsAdapter.submitList(new ArrayList<>(favoriteSights));
 
-                    emptyView.setVisibility(
-                            favoriteEvents.isEmpty() && favoriteSights.isEmpty()
-                                    ? View.VISIBLE
-                                    : View.GONE
-                    );
+                    if (favoriteEvents.isEmpty() && favoriteSights.isEmpty()) {
+                        emptyView.setVisibility(View.VISIBLE);
+                        emptyView.setText(R.string.no_favorites);
+                    } else {
+                        emptyView.setVisibility(View.GONE);
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    emptyView.setText("Hiba történt a kedvencek lekérésekor.");
                     emptyView.setVisibility(View.VISIBLE);
+                    emptyView.setText(R.string.error_fetching_favorites);
                 });
     }
 
@@ -124,15 +148,28 @@ public class FavoritesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_home) {
-            finish(); // vagy menj vissza a főoldalra
+            startActivity(new Intent(this, HomeActivity.class));
+            finish();
             return true;
+        } else if (id == R.id.menu_events) {
+            startActivity(new Intent(this, com.example.balatonapp.ui.events.EventsActivity.class));
+            finish();
+            return true;
+        } else if (id == R.id.menu_sights) {
+            startActivity(new Intent(this, com.example.balatonapp.ui.sights.SightsActivity.class));
+            finish();
+            return true;
+        } else if (id == R.id.menu_favorites) {
+            return true; // már itt vagyunk
         } else if (id == R.id.menu_logout) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, MainActivity.class));
             finish();
             return true;
+        } else if (id == android.R.id.home) {
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

@@ -23,5 +23,10 @@
     <string name="home">Főoldal</string>
     <string name="news_list">Hírek</string>
     <string name="news">Hírek</string>
+    <string name="menu_favorites">Kedvencek</string>
+    <string name="no_favorites">Nincsenek kedvencek</string>
+    <string name="error_fetching_favorites">Hiba a kedvencek betöltésénél</string>
+    <string name="expand">Tovább</string>
+    <string name="collapse">Bezár</string>
 
 </resources>

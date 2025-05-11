@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.balatonapp.R;
@@ -17,6 +19,7 @@ import com.example.balatonapp.firestore.Callback;
 import com.example.balatonapp.firestore.FirestoreService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +29,11 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
     private final List<Sight> sights = new ArrayList<>();
     private final FirestoreService firestoreService = new FirestoreService();
     private final Set<String> favoriteIds = new HashSet<>();
+    private final boolean isFavoritesList;
+
+    public SightAdapter(boolean isFavoritesList) {
+        this.isFavoritesList = isFavoritesList;
+    }
 
     @NonNull
     @Override
@@ -43,31 +51,51 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
         holder.location.setText(sight.getLocation());
         holder.description.setText(sight.getDescription());
 
-        // Kép betöltése drawable-ból
         int imageResId = context.getResources().getIdentifier(
                 sight.getImageName(), "drawable", context.getPackageName());
-        if (imageResId != 0) {
-            holder.image.setImageResource(imageResId);
-        } else {
-            holder.image.setImageResource(R.drawable.placeholder);
-        }
+        holder.image.setImageResource(imageResId != 0 ? imageResId : R.drawable.placeholder);
 
-        // Gomb szöveg frissítése
-        boolean isFav = favoriteIds.contains(sight.getImageName());
-        holder.favoriteButton.setText(isFav ? "Eltávolítás" : "Kedvenc");
+        String id = sight.getImageName();
+        boolean isFavorite = favoriteIds.contains(id);
 
-        holder.favoriteButton.setOnClickListener(v -> {
-            String id = sight.getImageName();
-            if (favoriteIds.contains(id)) {
-                firestoreService.removeFavorite("sights", id);
+        // Gomb állapot
+        if (isFavoritesList) {
+            holder.favoriteButton.setText("Eltávolítás");
+            holder.favoriteButton.setEnabled(true);
+            holder.favoriteButton.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+            holder.favoriteButton.setOnClickListener(v -> {
+                firestoreService.removeFavorite("sight", id);
                 favoriteIds.remove(id);
-                holder.favoriteButton.setText("Kedvenc");
+                int pos = holder.getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION) {
+                    sights.remove(pos);
+                    notifyItemRemoved(pos);
+                }
+            });
+        } else {
+            if (isFavorite) {
+                // Már kedvenc → szürke, nem aktív
+                holder.favoriteButton.setText("Kedvencek közt");
+                holder.favoriteButton.setEnabled(false);
+                holder.favoriteButton.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
             } else {
-                firestoreService.addFavorite("sights", id);
-                favoriteIds.add(id);
-                holder.favoriteButton.setText("Eltávolítás");
+                // Hozzáadható kedvencnek
+                holder.favoriteButton.setText("Kedvenc");
+                holder.favoriteButton.setEnabled(true);
+                holder.favoriteButton.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+                holder.favoriteButton.setOnClickListener(v -> {
+                    HashMap<String, Object> sightData = new HashMap<>();
+                    sightData.put("title", sight.getName());
+                    sightData.put("location", sight.getLocation());
+                    sightData.put("description", sight.getDescription());
+                    sightData.put("imageName", sight.getImageName());
+
+                    firestoreService.addFavorite("sight", id, sightData);
+                    favoriteIds.add(id);
+                    notifyItemChanged(holder.getAdapterPosition());
+                });
             }
-        });
+        }
     }
 
     @Override
@@ -79,7 +107,7 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
         sights.clear();
         sights.addAll(newSights);
 
-        firestoreService.getFavorites("sights", new Callback<Set<String>>() {
+        firestoreService.getFavorites("sight", new Callback<Set<String>>() {
             @Override
             public void onResult(Set<String> favs) {
                 favoriteIds.clear();
@@ -103,5 +131,4 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
             favoriteButton = itemView.findViewById(R.id.favoriteButton);
         }
     }
-
 }

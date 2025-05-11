@@ -13,7 +13,11 @@ public class Sight {
     private String location;
     private String imageName;
 
-    // Konstruktor
+    // Üres konstruktor Firestore-nak
+    public Sight() {
+    }
+
+    // Teljes konstruktor
     public Sight(String name, String description, String location, String imageName) {
         this.name = name;
         this.description = description;
@@ -21,7 +25,11 @@ public class Sight {
         this.imageName = imageName;
     }
 
-    // Getterek – EZEK hiányoztak
+    // GETTEREK
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -38,12 +46,24 @@ public class Sight {
         return imageName;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    // Setterek (ha kell Room-hoz)
+    // SETTEREK (Room miatt szükségesek)
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 }

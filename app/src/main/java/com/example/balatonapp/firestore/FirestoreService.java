@@ -2,11 +2,12 @@ package com.example.balatonapp.firestore;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class FirestoreService {
@@ -19,41 +20,60 @@ public class FirestoreService {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    private CollectionReference getUserCategoryCollection(String category) {
-        return db.collection("favorites")
-                .document(userId)
-                .collection(category);
+    // Felhasználónként külön kollekció
+    private CollectionReference getFavoritesCollection() {
+        return db.collection("favorites_" + userId);
     }
 
-    public void addFavorite(String category, String itemId) {
-        getUserCategoryCollection(category)
+    // Kedvenc hozzáadása
+    public void addFavorite(String category, String itemId, Map<String, Object> itemData) {
+        if (category == null || itemId == null) return;
+
+        Map<String, Object> data = new HashMap<>(itemData);
+        data.put("userId", userId);
+        data.put("type", category);
+        data.put("itemId", itemId);
+
+        getFavoritesCollection()
                 .document(itemId)
-                .set(new HashMap<String, Object>() {{
-                    put("favorited", true);
-                }});
+                .set(data); // felülírja, ha már létezik
     }
 
+    // Kedvenc törlése
     public void removeFavorite(String category, String itemId) {
-        getUserCategoryCollection(category)
+        if (category == null || itemId == null) return;
+
+        getFavoritesCollection()
                 .document(itemId)
                 .delete();
     }
 
+    // Megnézi, hogy az adott elem kedvenc-e
     public void isFavorite(String category, String itemId, Callback<Boolean> callback) {
-        getUserCategoryCollection(category)
+        if (category == null || itemId == null) {
+            callback.onResult(false);
+            return;
+        }
+
+        getFavoritesCollection()
                 .document(itemId)
                 .get()
-                .addOnSuccessListener(doc -> callback.onResult(doc.exists()))
+                .addOnSuccessListener(snapshot -> callback.onResult(snapshot.exists()))
                 .addOnFailureListener(e -> callback.onResult(false));
     }
 
+    // Az adott típusú kedvencek ID-jait adja vissza
     public void getFavorites(String category, Callback<Set<String>> callback) {
-        getUserCategoryCollection(category)
+        getFavoritesCollection()
+                .whereEqualTo("type", category)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     Set<String> ids = new HashSet<>();
-                    for (QueryDocumentSnapshot doc : snapshot) {
-                        ids.add(doc.getId());
+                    for (DocumentSnapshot doc : snapshot) {
+                        String id = doc.getString("itemId");
+                        if (id != null) {
+                            ids.add(id);
+                        }
                     }
                     callback.onResult(ids);
                 })

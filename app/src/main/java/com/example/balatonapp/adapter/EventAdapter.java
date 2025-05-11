@@ -23,49 +23,47 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.EventViewHolde
     private static final DiffUtil.ItemCallback<Event> DIFF_CALLBACK = new DiffUtil.ItemCallback<Event>() {
         @Override
         public boolean areItemsTheSame(@NonNull Event oldItem, @NonNull Event newItem) {
-            return oldItem.id == newItem.id;
+            return oldItem.getId() == newItem.getId();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Event oldItem, @NonNull Event newItem) {
-            return oldItem.title.equals(newItem.title) &&
-                    oldItem.location.equals(newItem.location) &&
-                    oldItem.date.equals(newItem.date) &&
-                    oldItem.description.equals(newItem.description) &&
-                    oldItem.imageName.equals(newItem.imageName);
+            return oldItem.getTitle().equals(newItem.getTitle()) &&
+                    oldItem.getLocation().equals(newItem.getLocation()) &&
+                    oldItem.getDate().equals(newItem.getDate()) &&
+                    oldItem.getDescription().equals(newItem.getDescription()) &&
+                    oldItem.getImageName().equals(newItem.getImageName());
         }
     };
 
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_event, parent, false);
         return new EventViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = getItem(position);
-        holder.title.setText(event.title);
-        holder.location.setText(event.location);
-        holder.date.setText(event.date);
-        holder.description.setText(event.description);
 
-        // Kép betöltése
-        int imageResId = holder.itemView.getContext().getResources().getIdentifier(
-                event.imageName, "drawable", holder.itemView.getContext().getPackageName()
-        );
-        if (imageResId != 0) {
-            holder.image.setImageResource(imageResId);
-        } else {
-            holder.image.setImageResource(R.drawable.placeholder);
-        }
+        holder.title.setText(event.getTitle());
+        holder.location.setText(event.getLocation());
+        holder.date.setText(event.getDate());
+        holder.description.setText(event.getDescription());
 
-        // "Tovább" gomb működése
+        // Kép beállítása
+        int imageResId = holder.itemView.getContext()
+                .getResources()
+                .getIdentifier(event.getImageName(), "drawable", holder.itemView.getContext().getPackageName());
+        holder.image.setImageResource(imageResId != 0 ? imageResId : R.drawable.placeholder);
+
+        // Leírás bővítés/gomb szöveg
         holder.btnExpand.setOnClickListener(v -> {
             boolean isExpanded = holder.description.getMaxLines() == Integer.MAX_VALUE;
             holder.description.setMaxLines(isExpanded ? 3 : Integer.MAX_VALUE);
-            holder.btnExpand.setText(isExpanded ? "Tovább" : "Bezár");
+            holder.btnExpand.setText(isExpanded ? R.string.expand : R.string.collapse);
         });
     }
 
@@ -83,5 +81,4 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.EventViewHolde
             image = itemView.findViewById(R.id.eventImage);
         }
     }
-
 }
