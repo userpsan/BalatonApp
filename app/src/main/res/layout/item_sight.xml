@@ -1,0 +1,73 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <Button
+            android:id="@+id/favoriteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Kedvenc"
+            android:backgroundTint="#FFD600"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:padding="4dp" />
+
+
+        <ImageView
+            android:id="@+id/sightImage"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/sightTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cím"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#1B3B4D" />
+
+        <TextView
+            android:id="@+id/sightLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Helyszín"
+            android:textColor="#555555"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/sightDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:text="Hosszabb leírás szövege itt jelenik meg, de alapból csak 3 sor látszik majd..."
+            android:textColor="#444444"
+            android:layout_marginTop="6dp" />
+
+        <TextView
+            android:id="@+id/toggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tovább"
+            android:textStyle="bold"
+            android:paddingTop="4dp"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

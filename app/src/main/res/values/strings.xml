@@ -16,5 +16,12 @@
     <string name="back">Vissza</string>
     <string name="registration_button_description">Regisztáció gomb</string>
     <string name="back_button_description">Vissza a főoldalra</string>
+    <string name="sights">Látnivalók</string>
+    <string name="events">Programok</string>
+    <string name="navigation_drawer_open">Open drawer</string>
+    <string name="navigation_drawer_close">Close drawer</string>
+    <string name="home">Főoldal</string>
+    <string name="news_list">Hírek</string>
+    <string name="news">Hírek</string>
 
 </resources>

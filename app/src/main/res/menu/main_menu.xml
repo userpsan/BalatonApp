@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_sights"
+        android:title="@string/sights"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_favorites"
+        android:title="Kedvencek"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_events"
+        android:title="@string/events"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_news"
+        android:title="@string/news"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_logout"
+        android:title="@string/logout"
+        app:showAsAction="never" />
+</menu>

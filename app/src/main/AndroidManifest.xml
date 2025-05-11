@@ -12,6 +12,12 @@
         android:theme="@style/Theme.BalatonApp"
         tools:targetApi="31">
 
+        <activity android:name=".ui.sights.SightsActivity" />
+        <activity android:name=".ui.events.EventsActivity" />
+        <activity android:name=".ui.news.NewsActivity" />
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".FavoritesActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -21,9 +27,5 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RegisterActivity" />
-
-        <activity android:name=".HomeActivity" />
     </application>
-
 </manifest>
