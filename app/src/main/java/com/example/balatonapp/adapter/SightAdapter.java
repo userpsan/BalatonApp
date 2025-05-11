@@ -103,4 +103,5 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
             favoriteButton = itemView.findViewById(R.id.favoriteButton);
         }
     }
+
 }

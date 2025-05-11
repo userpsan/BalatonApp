@@ -83,4 +83,5 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.EventViewHolde
             image = itemView.findViewById(R.id.eventImage);
         }
     }
+
 }

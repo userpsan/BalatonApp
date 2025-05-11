@@ -1,7 +1,10 @@
 package com.example.balatonapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,7 @@ import com.example.balatonapp.adapter.SightAdapter;
 import com.example.balatonapp.data.Event;
 import com.example.balatonapp.data.Sight;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -57,6 +61,9 @@ public class FavoritesActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Kedvencek");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Kedvencek");
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -81,31 +88,51 @@ public class FavoritesActivity extends AppCompatActivity {
                     favoriteEvents.clear();
                     favoriteSights.clear();
 
-                    for (var doc : queryDocumentSnapshots) {
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         String type = doc.getString("type");
                         if ("event".equals(type)) {
                             Event event = doc.toObject(Event.class);
-                            favoriteEvents.add(event);
+                            if (event != null) favoriteEvents.add(event);
                         } else if ("sight".equals(type)) {
                             Sight sight = doc.toObject(Sight.class);
-                            favoriteSights.add(sight);
+                            if (sight != null) favoriteSights.add(sight);
                         }
                     }
 
                     eventsAdapter.submitList(new ArrayList<>(favoriteEvents));
                     sightsAdapter.submitList(new ArrayList<>(favoriteSights));
 
-                    boolean isEmpty = favoriteEvents.isEmpty() && favoriteSights.isEmpty();
-                    emptyView.setVisibility(isEmpty ? TextView.VISIBLE : TextView.GONE);
+                    emptyView.setVisibility(
+                            favoriteEvents.isEmpty() && favoriteSights.isEmpty()
+                                    ? View.VISIBLE
+                                    : View.GONE
+                    );
+                })
+                .addOnFailureListener(e -> {
+                    emptyView.setText("Hiba történt a kedvencek lekérésekor.");
+                    emptyView.setVisibility(View.VISIBLE);
                 });
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        int id = item.getItemId();
+        if (id == R.id.menu_home) {
+            finish(); // vagy menj vissza a főoldalra
+            return true;
+        } else if (id == R.id.menu_logout) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, MainActivity.class));
             finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
