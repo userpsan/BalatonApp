@@ -27,6 +27,9 @@ public class SightsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sights);
 
+        // Animáció az Activity megnyitásakor
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -53,18 +56,22 @@ public class SightsActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_home) {
             startActivity(new Intent(this, HomeActivity.class));
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             return true;
         } else if (id == R.id.menu_events) {
             startActivity(new Intent(this, EventsActivity.class));
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             return true;
         } else if (id == R.id.menu_sights) {
             return true; // már itt vagyunk
         } else if (id == R.id.menu_news) {
             startActivity(new Intent(this, NewsActivity.class));
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             return true;
         } else if (id == R.id.menu_logout) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, MainActivity.class));
+            overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             finish();
             return true;
         }
