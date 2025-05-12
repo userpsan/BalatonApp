@@ -60,10 +60,22 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
         holder.expandButton.setText(R.string.expand);
 
         holder.expandButton.setOnClickListener(v -> {
-            boolean isExpanded = holder.description.getMaxLines() == Integer.MAX_VALUE;
-            holder.description.setMaxLines(isExpanded ? 3 : Integer.MAX_VALUE);
-            holder.expandButton.setText(isExpanded ? R.string.expand : R.string.collapse);
+            boolean isCollapsed = holder.description.getMaxLines() == 3;
+
+            if (isCollapsed) {
+                holder.description.setMaxLines(Integer.MAX_VALUE);
+                holder.expandButton.setText(R.string.collapse);
+            } else {
+                holder.description.setMaxLines(3);
+                holder.expandButton.setText(R.string.expand);
+            }
+
+            // Kritikus: újrarajzolás kényszerítése
+            holder.description.invalidate();
+            holder.description.requestLayout();
         });
+
+
 
         String id = sight.getImageName();
         boolean isFavorite = favoriteIds.contains(id);

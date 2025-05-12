@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -65,6 +67,9 @@ public class NewsAdapter extends ListAdapter<News, NewsAdapter.NewsViewHolder> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(news.getLink()));
             context.startActivity(browserIntent);
         });
+
+        Animation fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
+        holder.itemView.startAnimation(fadeIn);
     }
 
     static class NewsViewHolder extends RecyclerView.ViewHolder {

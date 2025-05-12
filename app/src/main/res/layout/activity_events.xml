@@ -7,7 +7,6 @@
     android:orientation="vertical"
     android:background="@drawable/background_color">
 
-    <!-- Egyedi toolbar menü ikon beágyazása RelativeLayout-tal -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -16,7 +15,6 @@
         app:titleTextColor="@android:color/white"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <!-- Menü ikon jobb oldalon -->
         <ImageView
             android:id="@+id/menuButton"
             android:layout_width="wrap_content"
@@ -27,7 +25,6 @@
             android:contentDescription="Menü gomb" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Programok listája -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewEvents"
         android:layout_width="match_parent"

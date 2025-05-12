@@ -8,4 +8,5 @@
     <color name="icon_color">#2E42E9</color>
     <color name="gray">#CCCCCC</color>
     <color name="yellow">#FFD600</color>
+    <color name="red">#F44336</color>
 </resources>

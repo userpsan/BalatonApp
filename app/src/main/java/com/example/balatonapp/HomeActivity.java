@@ -65,13 +65,17 @@ public class HomeActivity extends AppCompatActivity {
                 return true; // már itt vagyunk
             } else if (id == R.id.menu_events) {
                 startActivity(new Intent(this, EventsActivity.class));
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             } else if (id == R.id.menu_sights) {
                 startActivity(new Intent(this, SightsActivity.class));
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             } else if (id == R.id.menu_favorites) {
                 startActivity(new Intent(this, FavoritesActivity.class));
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             } else if (id == R.id.menu_logout) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(this, MainActivity.class));
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 finish();
             }
             return true;

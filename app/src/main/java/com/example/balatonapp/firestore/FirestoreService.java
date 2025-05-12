@@ -67,6 +67,13 @@ public class FirestoreService {
                 .addOnSuccessListener(snapshot -> callback.onResult(snapshot.exists()))
                 .addOnFailureListener(e -> callback.onResult(false));
     }
+    public void updateNote(String itemId, String newNote) {
+        if (itemId == null || newNote == null) return;
+
+        getFavoritesCollection()
+                .document(itemId)
+                .update("note", newNote, "timestamp", System.currentTimeMillis());
+    }
 
     // Az adott típusú kedvencek ID-jait adja vissza (pl. minden "sight" vagy "event" típus)
     public void getFavorites(String category, Callback<Set<String>> callback) {

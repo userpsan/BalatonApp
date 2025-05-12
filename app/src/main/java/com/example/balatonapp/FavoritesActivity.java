@@ -1,8 +1,9 @@
 package com.example.balatonapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -13,11 +14,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.balatonapp.adapter.EventAdapter;
-import com.example.balatonapp.adapter.SightAdapter;
-import com.example.balatonapp.data.Event;
+import com.example.balatonapp.adapter.FavoriteAdapter;
 import com.example.balatonapp.data.FavoriteItem;
-import com.example.balatonapp.data.Sight;
 import com.example.balatonapp.ui.events.EventsActivity;
 import com.example.balatonapp.ui.sights.SightsActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,18 +24,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 public class FavoritesActivity extends AppCompatActivity {
 
-    private RecyclerView eventsRecyclerView;
-    private RecyclerView sightsRecyclerView;
+    private RecyclerView favoritesRecyclerView;
     private TextView emptyView;
-    private EventAdapter eventsAdapter;
-    private SightAdapter sightsAdapter;
-    private final List<Event> favoriteEvents = new ArrayList<>();
-    private final List<Sight> favoriteSights = new ArrayList<>();
+    private FavoriteAdapter favoriteAdapter;
+    private final List<FavoriteItem> favoriteItems = new ArrayList<>();
     private FirebaseFirestore db;
     private String currentUserUid;
 
@@ -49,8 +44,11 @@ public class FavoritesActivity extends AppCompatActivity {
         setupToolbarAndMenu();
 
         emptyView = findViewById(R.id.emptyView);
-        eventsRecyclerView = findViewById(R.id.eventsRecyclerView);
-        sightsRecyclerView = findViewById(R.id.sightsRecyclerView);
+        favoritesRecyclerView = findViewById(R.id.eventsRecyclerView);
+        favoritesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        favoriteAdapter = new FavoriteAdapter(this);
+        favoritesRecyclerView.setAdapter(favoriteAdapter);
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -61,8 +59,40 @@ public class FavoritesActivity extends AppCompatActivity {
         currentUserUid = currentUser.getUid();
         db = FirebaseFirestore.getInstance();
 
-        setupRecyclerViews();
+        scheduleDailyReminder();
         loadFavorites();
+        findViewById(R.id.btnAllFavorites).setOnClickListener(v -> loadFavorites());
+        findViewById(R.id.btnOnlySights).setOnClickListener(v -> loadOnlySights());
+        findViewById(R.id.btnOnlyWithNotes).setOnClickListener(v -> loadOnlyWithNotes());
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadFavorites();
+    }
+    private void scheduleDailyReminder() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(this, ReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 18);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        // Ha már elmúlt ma 18:00, akkor holnapra ütemezzük
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent
+        );
     }
 
     private void setupToolbarAndMenu() {
@@ -89,7 +119,7 @@ public class FavoritesActivity extends AppCompatActivity {
             } else if (id == R.id.menu_sights) {
                 startActivity(new Intent(this, SightsActivity.class));
             } else if (id == R.id.menu_favorites) {
-                return true; // már itt vagyunk
+                return true;
             } else if (id == R.id.menu_logout) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(this, MainActivity.class));
@@ -101,58 +131,22 @@ public class FavoritesActivity extends AppCompatActivity {
         popup.show();
     }
 
-    private void setupRecyclerViews() {
-        eventsAdapter = new EventAdapter();
-        sightsAdapter = new SightAdapter(true);
-
-        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        eventsRecyclerView.setAdapter(eventsAdapter);
-
-        sightsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        sightsRecyclerView.setAdapter(sightsAdapter);
-    }
-
     private void loadFavorites() {
         db.collection("favorites_" + currentUserUid)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    favoriteEvents.clear();
-                    favoriteSights.clear();
+                    favoriteItems.clear();
 
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         FavoriteItem item = doc.toObject(FavoriteItem.class);
-                        if (item == null || item.getType() == null) continue;
-
-                        if (item.getType().equals("event")) {
-                            Date date = item.getDate();
-                            String formattedDate = date != null
-                                    ? DateFormat.format("yyyy.MM.dd", date).toString()
-                                    : "";
-
-                            Event event = new Event(
-                                    item.getTitle(),
-                                    item.getDescription(),
-                                    formattedDate,
-                                    item.getLocation(),
-                                    item.getImageName()
-                            );
-                            favoriteEvents.add(event);
-
-                        } else if (item.getType().equals("sight")) {
-                            Sight sight = new Sight(
-                                    item.getTitle(),
-                                    item.getDescription(),
-                                    item.getLocation(),
-                                    item.getImageName()
-                            );
-                            favoriteSights.add(sight);
+                        if (item != null) {
+                            favoriteItems.add(item);
                         }
                     }
 
-                    eventsAdapter.submitList(new ArrayList<>(favoriteEvents));
-                    sightsAdapter.submitList(new ArrayList<>(favoriteSights));
+                    favoriteAdapter.submitList(new ArrayList<>(favoriteItems));
 
-                    if (favoriteEvents.isEmpty() && favoriteSights.isEmpty()) {
+                    if (favoriteItems.isEmpty()) {
                         emptyView.setVisibility(View.VISIBLE);
                         emptyView.setText(R.string.no_favorites);
                     } else {
@@ -164,4 +158,53 @@ public class FavoritesActivity extends AppCompatActivity {
                     emptyView.setText(R.string.error_fetching_favorites);
                 });
     }
+    private void loadOnlySights() {
+        db.collection("favorites_" + currentUserUid)
+                .whereEqualTo("type", "sight")
+                .orderBy("title") // ez kombináció, így indexet igényel
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    favoriteItems.clear();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        FavoriteItem item = doc.toObject(FavoriteItem.class);
+                        if (item != null) {
+                            favoriteItems.add(item);
+                        }
+                    }
+
+                    favoriteAdapter.submitList(new ArrayList<>(favoriteItems));
+
+                    emptyView.setVisibility(favoriteItems.isEmpty() ? View.VISIBLE : View.GONE);
+                })
+                .addOnFailureListener(e -> {
+                    emptyView.setVisibility(View.VISIBLE);
+                    emptyView.setText(R.string.error_fetching_favorites);
+                });
+    }
+    private void loadOnlyWithNotes() {
+        db.collection("favorites_" + currentUserUid)
+                .whereGreaterThan("note", "")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    favoriteItems.clear();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        FavoriteItem item = doc.toObject(FavoriteItem.class);
+                        if (item != null) {
+                            favoriteItems.add(item);
+                        }
+                    }
+
+                    favoriteAdapter.submitList(new ArrayList<>(favoriteItems));
+
+                    emptyView.setVisibility(favoriteItems.isEmpty() ? View.VISIBLE : View.GONE);
+                    if (favoriteItems.isEmpty()) {
+                        emptyView.setText("Nincs megjegyzéssel ellátott kedvenc.");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    emptyView.setVisibility(View.VISIBLE);
+                    emptyView.setText("Hiba történt a megjegyzések lekérdezésekor.");
+                });
+    }
+
 }

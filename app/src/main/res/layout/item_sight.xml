@@ -13,6 +13,18 @@
         android:orientation="vertical"
         android:padding="12dp">
 
+        <!-- Kép fölött elhelyezett kedvenc gomb -->
+        <Button
+            android:id="@+id/favoriteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="★"
+            android:textSize="16sp"
+            android:backgroundTint="@color/yellow"
+            android:textColor="@android:color/black"
+            android:layout_gravity="end"
+            android:layout_marginBottom="8dp" />
+
         <ImageView
             android:id="@+id/sightImage"
             android:layout_width="match_parent"
@@ -51,16 +63,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tovább"
+            android:textStyle="bold"
             android:layout_marginTop="4dp" />
-
-        <Button
-            android:id="@+id/favoriteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Kedvenc"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/yellow"
-            android:textColor="@android:color/black" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
