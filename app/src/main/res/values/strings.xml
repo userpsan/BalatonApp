@@ -28,5 +28,9 @@
     <string name="error_fetching_favorites">Hiba a kedvencek betöltésénél</string>
     <string name="expand">Tovább</string>
     <string name="collapse">Bezár</string>
+    <string name="menu_home">Főoldal</string>
+    <string name="add_favorite">Kedvenc</string>
+    <string name="in_favorites">Kedvencek közt</string>
+    <string name="remove_favorite">Eltávolítás</string>
 
 </resources>

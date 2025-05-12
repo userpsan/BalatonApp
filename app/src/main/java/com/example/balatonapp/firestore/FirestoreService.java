@@ -17,26 +17,32 @@ public class FirestoreService {
 
     public FirestoreService() {
         db = FirebaseFirestore.getInstance();
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            userId = auth.getCurrentUser().getUid();
+        } else {
+            userId = "anonymous"; // fallback, de nem fog működni rendesen bejelentkezés nélkül
+        }
     }
 
-    // Felhasználónként külön kollekció
+    // Felhasználónként külön kollekció (pl. favorites_uid12345)
     private CollectionReference getFavoritesCollection() {
         return db.collection("favorites_" + userId);
     }
 
-    // Kedvenc hozzáadása
+    // Kedvenc hozzáadása adott kategóriában (pl. "event" vagy "sight")
     public void addFavorite(String category, String itemId, Map<String, Object> itemData) {
-        if (category == null || itemId == null) return;
+        if (category == null || itemId == null || itemData == null) return;
 
         Map<String, Object> data = new HashMap<>(itemData);
         data.put("userId", userId);
         data.put("type", category);
         data.put("itemId", itemId);
+        data.put("timestamp", System.currentTimeMillis());
 
         getFavoritesCollection()
                 .document(itemId)
-                .set(data); // felülírja, ha már létezik
+                .set(data);
     }
 
     // Kedvenc törlése
@@ -62,14 +68,14 @@ public class FirestoreService {
                 .addOnFailureListener(e -> callback.onResult(false));
     }
 
-    // Az adott típusú kedvencek ID-jait adja vissza
+    // Az adott típusú kedvencek ID-jait adja vissza (pl. minden "sight" vagy "event" típus)
     public void getFavorites(String category, Callback<Set<String>> callback) {
         getFavoritesCollection()
                 .whereEqualTo("type", category)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     Set<String> ids = new HashSet<>();
-                    for (DocumentSnapshot doc : snapshot) {
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
                         String id = doc.getString("itemId");
                         if (id != null) {
                             ids.add(id);

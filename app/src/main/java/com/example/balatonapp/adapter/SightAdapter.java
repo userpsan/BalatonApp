@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.core.content.ContextCompat;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -51,18 +50,29 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
         holder.location.setText(sight.getLocation());
         holder.description.setText(sight.getDescription());
 
+        // Kép beállítása
         int imageResId = context.getResources().getIdentifier(
                 sight.getImageName(), "drawable", context.getPackageName());
         holder.image.setImageResource(imageResId != 0 ? imageResId : R.drawable.placeholder);
 
+        // Kezdeti állapot: 3 sor
+        holder.description.setMaxLines(3);
+        holder.expandButton.setText(R.string.expand);
+
+        holder.expandButton.setOnClickListener(v -> {
+            boolean isExpanded = holder.description.getMaxLines() == Integer.MAX_VALUE;
+            holder.description.setMaxLines(isExpanded ? 3 : Integer.MAX_VALUE);
+            holder.expandButton.setText(isExpanded ? R.string.expand : R.string.collapse);
+        });
+
         String id = sight.getImageName();
         boolean isFavorite = favoriteIds.contains(id);
 
-        // Gomb állapot
         if (isFavoritesList) {
-            holder.favoriteButton.setText("Eltávolítás");
+            holder.favoriteButton.setText(R.string.remove_favorite);
             holder.favoriteButton.setEnabled(true);
             holder.favoriteButton.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+
             holder.favoriteButton.setOnClickListener(v -> {
                 firestoreService.removeFavorite("sight", id);
                 favoriteIds.remove(id);
@@ -74,15 +84,14 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
             });
         } else {
             if (isFavorite) {
-                // Már kedvenc → szürke, nem aktív
-                holder.favoriteButton.setText("Kedvencek közt");
+                holder.favoriteButton.setText(R.string.in_favorites);
                 holder.favoriteButton.setEnabled(false);
                 holder.favoriteButton.setBackgroundColor(ContextCompat.getColor(context, R.color.gray));
             } else {
-                // Hozzáadható kedvencnek
-                holder.favoriteButton.setText("Kedvenc");
+                holder.favoriteButton.setText(R.string.add_favorite);
                 holder.favoriteButton.setEnabled(true);
                 holder.favoriteButton.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow));
+
                 holder.favoriteButton.setOnClickListener(v -> {
                     HashMap<String, Object> sightData = new HashMap<>();
                     sightData.put("title", sight.getName());
@@ -118,7 +127,7 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
     }
 
     static class SightViewHolder extends RecyclerView.ViewHolder {
-        TextView name, location, description;
+        TextView name, location, description, expandButton;
         ImageView image;
         Button favoriteButton;
 
@@ -127,6 +136,7 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
             name = itemView.findViewById(R.id.sightTitle);
             location = itemView.findViewById(R.id.sightLocation);
             description = itemView.findViewById(R.id.sightDescription);
+            expandButton = itemView.findViewById(R.id.btnExpand);
             image = itemView.findViewById(R.id.sightImage);
             favoriteButton = itemView.findViewById(R.id.favoriteButton);
         }
