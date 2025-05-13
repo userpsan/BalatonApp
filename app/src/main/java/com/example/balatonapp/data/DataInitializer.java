@@ -124,7 +124,7 @@ public class DataInitializer {
                 "event_everness"
         ));
 
-        // --------- Látnivalók (Sights) ---------
+
         db.sightDao().insert(new Sight(
                 "Bácsi-kápolna",
                 "Káptalantótitól másfél kilométerre, a Tapolcai- és a Káli-medence találkozásánál találjuk a Szűz Mária tiszteletére építtetett Bácsi-kápolnát...",

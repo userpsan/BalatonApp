@@ -22,7 +22,7 @@
             android:layout_gravity="end"
             android:padding="12dp"
             android:src="@drawable/menu_btn"
-            android:contentDescription="Menü gomb" />
+            android:contentDescription="@string/menu_btn" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -30,5 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:contentDescription="@string/events_list"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>

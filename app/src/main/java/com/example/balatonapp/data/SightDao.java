@@ -14,9 +14,6 @@ public interface SightDao {
     @Update
     void update(Sight sight);
 
-    @Delete
-    void delete(Sight sight);
-
     @Query("SELECT * FROM sight_table ORDER BY name ASC")
     LiveData<List<Sight>> getAllSights();
 }

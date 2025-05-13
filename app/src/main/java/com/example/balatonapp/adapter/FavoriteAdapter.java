@@ -1,5 +1,6 @@
 package com.example.balatonapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -53,15 +54,13 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
             }
         });
 
-        // Kép beállítása drawable alapján
-        int imageResId = context.getResources().getIdentifier(item.getImageName(), "drawable", context.getPackageName());
+        @SuppressLint("DiscouragedApi") int imageResId = context.getResources().getIdentifier(item.getImageName(), "drawable", context.getPackageName());
         if (imageResId != 0) {
             holder.image.setImageResource(imageResId);
         } else {
             holder.image.setImageResource(R.drawable.placeholder);
         }
 
-        // Megjegyzés mentése
         holder.saveNoteButton.setOnClickListener(v -> {
             String newNote = holder.noteInput.getText().toString().trim();
             item.setNote(newNote);
@@ -69,20 +68,17 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
             NotificationHelper.showNotification(context, "Kedvencek frissítve", item.getTitle() + " megjegyzése mentve.");
         });
 
-        // Törlés a listából és Firestore-ból
-        holder.deleteButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(context)
-                    .setTitle("Kedvenc törlése")
-                    .setMessage("Biztosan eltávolítod a kedvencek közül?")
-                    .setPositiveButton("Igen", (dialog, which) -> {
-                        new FirestoreService().removeFavorite(item.getType(), item.getItemId());
-                        favorites.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, favorites.size());
-                    })
-                    .setNegativeButton("Mégse", null)
-                    .show();
-        });
+        holder.deleteButton.setOnClickListener(v -> new AlertDialog.Builder(context)
+                .setTitle("Kedvenc törlése")
+                .setMessage("Biztosan eltávolítod a kedvencek közül?")
+                .setPositiveButton("Igen", (dialog, which) -> {
+                    new FirestoreService().removeFavorite(item.getType(), item.getItemId());
+                    favorites.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, favorites.size());
+                })
+                .setNegativeButton("Mégse", null)
+                .show());
     }
 
     @Override
@@ -90,12 +86,13 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         return favorites.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void submitList(List<FavoriteItem> items) {
         favorites = items;
         notifyDataSetChanged();
     }
 
-    static class FavoriteViewHolder extends RecyclerView.ViewHolder {
+    public static class FavoriteViewHolder extends RecyclerView.ViewHolder {
         TextView title, location, description;
         EditText noteInput;
         ImageView image;

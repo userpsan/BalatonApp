@@ -1,5 +1,6 @@
 package com.example.balatonapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,7 +27,7 @@ public class NewsAdapter extends ListAdapter<News, NewsAdapter.NewsViewHolder> {
         super(DIFF_CALLBACK);
     }
 
-    private static final DiffUtil.ItemCallback<News> DIFF_CALLBACK = new DiffUtil.ItemCallback<News>() {
+    private static final DiffUtil.ItemCallback<News> DIFF_CALLBACK = new DiffUtil.ItemCallback<>() {
         @Override
         public boolean areItemsTheSame(@NonNull News oldItem, @NonNull News newItem) {
             return oldItem.getImageName().equals(newItem.getImageName());
@@ -55,8 +56,7 @@ public class NewsAdapter extends ListAdapter<News, NewsAdapter.NewsViewHolder> {
         holder.title.setText(news.getTitle());
         holder.excerpt.setText(news.getExcerpt());
 
-        // Kép betöltése drawable-ból
-        int imageResId = context.getResources().getIdentifier(news.getImageName(), "drawable", context.getPackageName());
+        @SuppressLint("DiscouragedApi") int imageResId = context.getResources().getIdentifier(news.getImageName(), "drawable", context.getPackageName());
         if (imageResId != 0) {
             holder.image.setImageResource(imageResId);
         } else {
@@ -72,7 +72,7 @@ public class NewsAdapter extends ListAdapter<News, NewsAdapter.NewsViewHolder> {
         holder.itemView.startAnimation(fadeIn);
     }
 
-    static class NewsViewHolder extends RecyclerView.ViewHolder {
+    public static class NewsViewHolder extends RecyclerView.ViewHolder {
         TextView title, excerpt;
         ImageView image;
         Button readMore;

@@ -21,16 +21,14 @@ public class FirestoreService {
         if (auth.getCurrentUser() != null) {
             userId = auth.getCurrentUser().getUid();
         } else {
-            userId = "anonymous"; // fallback, de nem fog működni rendesen bejelentkezés nélkül
+            userId = "anonymous";
         }
     }
 
-    // Felhasználónként külön kollekció (pl. favorites_uid12345)
     private CollectionReference getFavoritesCollection() {
         return db.collection("favorites_" + userId);
     }
 
-    // Kedvenc hozzáadása adott kategóriában (pl. "event" vagy "sight")
     public void addFavorite(String category, String itemId, Map<String, Object> itemData) {
         if (category == null || itemId == null || itemData == null) return;
 
@@ -45,7 +43,6 @@ public class FirestoreService {
                 .set(data);
     }
 
-    // Kedvenc törlése
     public void removeFavorite(String category, String itemId) {
         if (category == null || itemId == null) return;
 
@@ -54,19 +51,6 @@ public class FirestoreService {
                 .delete();
     }
 
-    // Megnézi, hogy az adott elem kedvenc-e
-    public void isFavorite(String category, String itemId, Callback<Boolean> callback) {
-        if (category == null || itemId == null) {
-            callback.onResult(false);
-            return;
-        }
-
-        getFavoritesCollection()
-                .document(itemId)
-                .get()
-                .addOnSuccessListener(snapshot -> callback.onResult(snapshot.exists()))
-                .addOnFailureListener(e -> callback.onResult(false));
-    }
     public void updateNote(String itemId, String newNote) {
         if (itemId == null || newNote == null) return;
 
@@ -75,7 +59,6 @@ public class FirestoreService {
                 .update("note", newNote, "timestamp", System.currentTimeMillis());
     }
 
-    // Az adott típusú kedvencek ID-jait adja vissza (pl. minden "sight" vagy "event" típus)
     public void getFavorites(String category, Callback<Set<String>> callback) {
         getFavoritesCollection()
                 .whereEqualTo("type", category)

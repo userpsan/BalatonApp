@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/event_picture"
             android:src="@drawable/placeholder"
             android:layout_marginBottom="12dp" />
 
@@ -26,7 +27,7 @@
             android:id="@+id/eventTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Esemény címe"
+            android:text="@string/event_name"
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="#1B3B4D" />
@@ -35,7 +36,7 @@
             android:id="@+id/eventLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Helyszín"
+            android:text="@string/place"
             android:textColor="#555555"
             android:layout_marginTop="2dp" />
 
@@ -43,7 +44,7 @@
             android:id="@+id/eventDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dátum"
+            android:text="@string/date"
             android:textColor="#777777"
             android:layout_marginTop="2dp" />
 
@@ -53,7 +54,7 @@
             android:layout_height="wrap_content"
             android:maxLines="3"
             android:ellipsize="end"
-            android:text="Leírás szövege, ami hosszabb is lehet, de alapból csak három sor látszik..."
+            android:text="@string/string"
             android:textColor="#444444"
             android:layout_marginTop="6dp" />
 
@@ -61,7 +62,7 @@
             android:id="@+id/btnExpand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tovább"
+            android:text="@string/string_continue"
             android:textStyle="bold"
             android:paddingTop="4dp"
             android:clickable="true"

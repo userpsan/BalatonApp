@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <!-- Gombok vízszintesen, jobbra igazítva -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,17 +23,17 @@
                 android:id="@+id/deleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Törlés"
+                android:text="@string/favorite_delete"
                 android:layout_marginStart="12dp"
                 android:backgroundTint="@color/yellow"
                 android:textColor="@android:color/white" />
         </LinearLayout>
 
-        <!-- Kép -->
         <ImageView
             android:id="@+id/favImage"
             android:layout_width="match_parent"
             android:layout_height="180dp"
+            android:contentDescription="@string/event_picture"
             android:scaleType="centerCrop"
             android:src="@drawable/placeholder" />
 
@@ -42,7 +41,7 @@
             android:id="@+id/favTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cím"
+            android:text="@string/title"
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="#1B3B4D"
@@ -52,7 +51,7 @@
             android:id="@+id/favLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Helyszín"
+            android:text="@string/place"
             android:textColor="#555555"
             android:layout_marginTop="2dp" />
 
@@ -60,14 +59,14 @@
             android:id="@+id/favDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Leírás"
+            android:text="@string/string"
             android:textColor="#444444"
             android:layout_marginTop="6dp" />
         <EditText
             android:id="@+id/favNoteInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Megjegyzés írása..."
+            android:hint="@string/write_comment"
             android:minLines="2"
             android:maxLines="4"
             android:inputType="textMultiLine"
@@ -79,7 +78,7 @@
             android:id="@+id/saveNoteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mentés"
+            android:text="@string/save"
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/button_color"
             android:textColor="@android:color/white" />

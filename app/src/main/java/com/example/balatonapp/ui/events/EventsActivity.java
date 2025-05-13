@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-
+import android.content.res.Configuration;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,31 +23,32 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class EventsActivity extends AppCompatActivity {
 
-    private EventViewModel viewModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        // Toolbar beállítás
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Programok");
         }
 
-        // Egyéni menü ikon (jobb felső sarok)
         ImageView menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(this::showPopupMenu);
 
-        // RecyclerView beállítás
         RecyclerView recyclerView = findViewById(R.id.recyclerViewEvents);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        }
         EventAdapter adapter = new EventAdapter();
         recyclerView.setAdapter(adapter);
 
-        viewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        EventViewModel viewModel = new ViewModelProvider(this).get(EventViewModel.class);
         viewModel.getAllEvents().observe(this, adapter::submitList);
     }
 
@@ -61,7 +63,7 @@ public class EventsActivity extends AppCompatActivity {
             } else if (id == R.id.menu_sights) {
                 startActivity(new Intent(this, SightsActivity.class));
             } else if (id == R.id.menu_events) {
-                return true; // már itt vagyunk
+                return true;
             } else if (id == R.id.menu_favorites) {
                 startActivity(new Intent(this, FavoritesActivity.class));
             } else if (id == R.id.menu_logout) {

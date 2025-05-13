@@ -13,15 +13,14 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <!-- Kép fölött elhelyezett kedvenc gomb -->
         <Button
             android:id="@+id/favoriteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="★"
             android:textSize="16sp"
             android:backgroundTint="@color/yellow"
             android:textColor="@android:color/black"
+            android:contentDescription="@string/add_favorites"
             android:layout_gravity="end"
             android:layout_marginBottom="8dp" />
 
@@ -30,13 +29,14 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/sight_picture"
             android:src="@drawable/placeholder" />
 
         <TextView
             android:id="@+id/sightTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cím"
+            android:text="@string/title"
             android:textAppearance="?attr/textAppearanceHeadline6"
             android:textColor="@android:color/black"
             android:layout_marginTop="8dp" />
@@ -45,14 +45,14 @@
             android:id="@+id/sightLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Helyszín"
+            android:text="@string/place"
             android:textColor="@android:color/darker_gray" />
 
         <TextView
             android:id="@+id/sightDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Leírás..."
+            android:text="@string/string"
             android:maxLines="3"
             android:ellipsize="end"
             android:layout_marginTop="6dp"
@@ -62,7 +62,7 @@
             android:id="@+id/btnExpand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tovább"
+            android:text="@string/string_continue"
             android:textStyle="bold"
             android:layout_marginTop="4dp" />
 

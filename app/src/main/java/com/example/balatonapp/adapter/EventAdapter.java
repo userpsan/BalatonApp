@@ -1,5 +1,6 @@
 package com.example.balatonapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.EventViewHolde
         super(DIFF_CALLBACK);
     }
 
-    private static final DiffUtil.ItemCallback<Event> DIFF_CALLBACK = new DiffUtil.ItemCallback<Event>() {
+    private static final DiffUtil.ItemCallback<Event> DIFF_CALLBACK = new DiffUtil.ItemCallback<>() {
         @Override
         public boolean areItemsTheSame(@NonNull Event oldItem, @NonNull Event newItem) {
             return oldItem.getId() == newItem.getId();
@@ -53,13 +54,12 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.EventViewHolde
         holder.date.setText(event.getDate());
         holder.description.setText(event.getDescription());
 
-        // Kép beállítása
-        int imageResId = holder.itemView.getContext()
+
+        @SuppressLint("DiscouragedApi") int imageResId = holder.itemView.getContext()
                 .getResources()
                 .getIdentifier(event.getImageName(), "drawable", holder.itemView.getContext().getPackageName());
         holder.image.setImageResource(imageResId != 0 ? imageResId : R.drawable.placeholder);
 
-        // Leírás bővítés/gomb szöveg
         holder.btnExpand.setOnClickListener(v -> {
             boolean isExpanded = holder.description.getMaxLines() == Integer.MAX_VALUE;
             holder.description.setMaxLines(isExpanded ? 3 : Integer.MAX_VALUE);
@@ -67,7 +67,7 @@ public class EventAdapter extends ListAdapter<Event, EventAdapter.EventViewHolde
         });
     }
 
-    static class EventViewHolder extends RecyclerView.ViewHolder {
+    public static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView title, location, date, description, btnExpand;
         ImageView image;
 

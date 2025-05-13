@@ -32,5 +32,27 @@
     <string name="add_favorite">Kedvenc</string>
     <string name="in_favorites">Kedvencek közt</string>
     <string name="remove_favorite">Eltávolítás</string>
+    <string name="menu_btn">Menü gomb</string>
+    <string name="events_list">Események listája</string>
+    <string name="all">Mind</string>
+    <string name="comment">Megjegyzés</string>
+    <string name="sights_list">Látnivalók listája\n</string>
+    <string name="event_name">Esemény címe</string>
+    <string name="place">Helyszín</string>
+    <string name="date">Dátum</string>
+    <string name="string">Leírás szövege</string>
+    <string name="string_continue">Tovább</string>
+    <string name="event_picture">Esemény képe</string>
+    <string name="favorite_delete">Törlés</string>
+    <string name="title">Cím</string>
+    <string name="write_comment">Megjegyzés írása...</string>
+    <string name="save">Mentés</string>
+    <string name="news_name">Cikk címe</string>
+    <string name="pre_news">Rövid kivonat a cikkből</string>
+    <string name="open">Megnyitás</string>
+    <string name="news_picture">Hírhez tartozó kép\n</string>
+    <string name="sight_picture">Látnivaló kép\n</string>
+    <string name="favorites_menu_title">Kedvencek</string>
+    <string name="add_favorites">Kedvencekhez adás</string>
 
 </resources>

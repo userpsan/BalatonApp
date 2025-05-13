@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/news_picture"
             android:src="@drawable/placeholder"
             android:layout_marginBottom="8dp" />
 
@@ -26,7 +27,7 @@
             android:id="@+id/newsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cikk címe"
+            android:text="@string/news_name"
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="#1B3B4D" />
@@ -35,7 +36,7 @@
             android:id="@+id/newsExcerpt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rövid kivonat a cikkből, max 2-3 sorban."
+            android:text="@string/pre_news"
             android:textColor="#444444"
             android:maxLines="3"
             android:ellipsize="end"
@@ -45,7 +46,8 @@
             android:id="@+id/newsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Megnyitás"
+            android:text="@string/open"
+            android:backgroundTint="@color/button_color"
             android:layout_marginTop="8dp" />
 
     </LinearLayout>

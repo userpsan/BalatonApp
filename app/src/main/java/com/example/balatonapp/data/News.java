@@ -11,9 +11,9 @@ public class News {
 
     private String title;
     private String description;
-    private String date;
-    private String imageName;  // ÚJ: képfájl neve
-    private String url;        // ÚJ: hivatkozás az eredeti cikkre
+    private final String date;
+    private final String imageName;
+    private final String url;
 
     public News(String title, String description, String date, String imageName, String url) {
         this.title = title;
@@ -23,7 +23,6 @@ public class News {
         this.url = url;
     }
 
-    // Getterek és setterek
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -35,9 +34,6 @@ public class News {
 
     public void setTitle(String title) { this.title = title; }
     public void setDescription(String description) { this.description = description; }
-    public void setDate(String date) { this.date = date; }
-    public void setImageName(String imageName) { this.imageName = imageName; }
-    public void setUrl(String url) { this.url = url; }
     public String getExcerpt() { return description; }
     public String getLink() { return url; }
 }

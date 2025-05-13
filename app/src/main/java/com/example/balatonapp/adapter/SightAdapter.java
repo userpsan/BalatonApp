@@ -1,5 +1,6 @@
 package com.example.balatonapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.balatonapp.R;
 import com.example.balatonapp.data.Sight;
-import com.example.balatonapp.firestore.Callback;
 import com.example.balatonapp.firestore.FirestoreService;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
         holder.description.setText(sight.getDescription());
 
         // Kép beállítása
-        int imageResId = context.getResources().getIdentifier(
+        @SuppressLint("DiscouragedApi") int imageResId = context.getResources().getIdentifier(
                 sight.getImageName(), "drawable", context.getPackageName());
         holder.image.setImageResource(imageResId != 0 ? imageResId : R.drawable.placeholder);
 
@@ -124,21 +124,19 @@ public class SightAdapter extends RecyclerView.Adapter<SightAdapter.SightViewHol
         return sights.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void submitList(List<Sight> newSights) {
         sights.clear();
         sights.addAll(newSights);
 
-        firestoreService.getFavorites("sight", new Callback<Set<String>>() {
-            @Override
-            public void onResult(Set<String> favs) {
-                favoriteIds.clear();
-                favoriteIds.addAll(favs);
-                notifyDataSetChanged();
-            }
+        firestoreService.getFavorites("sight", favs -> {
+            favoriteIds.clear();
+            favoriteIds.addAll(favs);
+            notifyDataSetChanged();
         });
     }
 
-    static class SightViewHolder extends RecyclerView.ViewHolder {
+    public static class SightViewHolder extends RecyclerView.ViewHolder {
         TextView name, location, description, expandButton;
         ImageView image;
         Button favoriteButton;

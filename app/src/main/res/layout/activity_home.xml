@@ -22,7 +22,7 @@
             android:layout_gravity="end"
             android:padding="12dp"
             android:src="@drawable/menu_btn"
-            android:contentDescription="Menü" />
+            android:contentDescription="@string/menu_btn" />
     </androidx.appcompat.widget.Toolbar>
 
 
@@ -33,6 +33,7 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:padding="8dp"
         android:clipToPadding="false"
+        android:contentDescription="@string/news_list"
         android:scrollbars="vertical" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

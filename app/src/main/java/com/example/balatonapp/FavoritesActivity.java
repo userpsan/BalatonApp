@@ -1,5 +1,6 @@
 package com.example.balatonapp;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -29,7 +30,6 @@ import java.util.List;
 
 public class FavoritesActivity extends AppCompatActivity {
 
-    private RecyclerView favoritesRecyclerView;
     private TextView emptyView;
     private FavoriteAdapter favoriteAdapter;
     private final List<FavoriteItem> favoriteItems = new ArrayList<>();
@@ -44,7 +44,7 @@ public class FavoritesActivity extends AppCompatActivity {
         setupToolbarAndMenu();
 
         emptyView = findViewById(R.id.emptyView);
-        favoritesRecyclerView = findViewById(R.id.eventsRecyclerView);
+        RecyclerView favoritesRecyclerView = findViewById(R.id.eventsRecyclerView);
         favoritesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         favoriteAdapter = new FavoriteAdapter(this);
@@ -82,7 +82,6 @@ public class FavoritesActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        // Ha már elmúlt ma 18:00, akkor holnapra ütemezzük
         if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
@@ -161,7 +160,7 @@ public class FavoritesActivity extends AppCompatActivity {
     private void loadOnlySights() {
         db.collection("favorites_" + currentUserUid)
                 .whereEqualTo("type", "sight")
-                .orderBy("title") // ez kombináció, így indexet igényel
+                .orderBy("title")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     favoriteItems.clear();
@@ -181,6 +180,7 @@ public class FavoritesActivity extends AppCompatActivity {
                     emptyView.setText(R.string.error_fetching_favorites);
                 });
     }
+    @SuppressLint("SetTextI18n")
     private void loadOnlyWithNotes() {
         db.collection("favorites_" + currentUserUid)
                 .whereGreaterThan("note", "")

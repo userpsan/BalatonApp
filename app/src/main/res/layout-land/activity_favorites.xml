@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".FavoritesActivity"
-    android:background="@drawable/background_color">
+    android:background="@drawable/background_color"
+    tools:context=".FavoritesActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -26,6 +26,7 @@
             android:src="@drawable/menu_btn"
             android:contentDescription="@string/menu_btn" />
     </androidx.appcompat.widget.Toolbar>
+
     <LinearLayout
         android:id="@+id/filterButtons"
         android:layout_width="match_parent"
@@ -48,6 +49,7 @@
             android:backgroundTint="@color/button_color"
             android:text="@string/sights"
             android:layout_marginStart="12dp" />
+
         <Button
             android:id="@+id/btnOnlyWithNotes"
             android:layout_width="wrap_content"
@@ -55,7 +57,6 @@
             android:backgroundTint="@color/button_color"
             android:text="@string/comment"
             android:layout_marginStart="12dp" />
-
     </LinearLayout>
 
     <TextView

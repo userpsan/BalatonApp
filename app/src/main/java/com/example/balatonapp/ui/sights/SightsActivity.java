@@ -22,34 +22,32 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SightsActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private SightAdapter adapter;
-    private SightViewModel sightViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sights);
 
-        // Toolbar beállítása
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Látnivalók");
         }
 
-        // Menü ikon beállítása
+
         ImageView menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(this::showPopupMenu);
 
-        // RecyclerView beállítása
-        recyclerView = findViewById(R.id.recyclerViewSights);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewSights);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new SightAdapter(false);
         recyclerView.setAdapter(adapter);
 
-        // ViewModel figyelése
-        sightViewModel = new ViewModelProvider(this).get(SightViewModel.class);
+
+        SightViewModel sightViewModel = new ViewModelProvider(this).get(SightViewModel.class);
         sightViewModel.getAllSights().observe(this, sights -> {
             if (sights != null) {
                 adapter.submitList(sights);
@@ -66,7 +64,7 @@ public class SightsActivity extends AppCompatActivity {
             if (id == R.id.menu_home) {
                 startActivity(new Intent(this, HomeActivity.class));
             } else if (id == R.id.menu_sights) {
-                return true; // már ezen az oldalon vagyunk
+                return true;
             } else if (id == R.id.menu_events) {
                 startActivity(new Intent(this, EventsActivity.class));
             } else if (id == R.id.menu_favorites) {
