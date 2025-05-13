@@ -2,6 +2,8 @@ package com.example.balatonapp.data;
 
 
 public class FavoriteItem {
+    private String userId;
+    private long timestamp;
 
     private String itemId;
     private String type;
@@ -54,5 +56,20 @@ public class FavoriteItem {
     }
     public void setNote(String note) {
         this.note = note;
+    }
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

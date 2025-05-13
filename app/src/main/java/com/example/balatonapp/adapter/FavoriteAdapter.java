@@ -38,6 +38,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         return new FavoriteViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull FavoriteViewHolder holder, int position) {
         FavoriteItem item = favorites.get(position);
@@ -45,7 +46,16 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         holder.title.setText(item.getTitle());
         holder.location.setText(item.getLocation());
         holder.description.setText(item.getDescription());
-        holder.noteInput.setText(item.getNote());
+
+        holder.noteInput.setText("");
+
+        if (item.getNote() != null && !item.getNote().isEmpty()) {
+            holder.noteText.setVisibility(View.VISIBLE);
+            holder.noteText.setText("Megjegyzés: " + item.getNote());
+        } else {
+            holder.noteText.setVisibility(View.GONE);
+        }
+
         holder.noteInput.setOnClickListener(v -> {
             holder.noteInput.requestFocus();
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -54,7 +64,10 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
             }
         });
 
-        @SuppressLint("DiscouragedApi") int imageResId = context.getResources().getIdentifier(item.getImageName(), "drawable", context.getPackageName());
+        String imageName = item.getImageName();
+        @SuppressLint("DiscouragedApi") int imageResId = (imageName != null) ?
+                context.getResources().getIdentifier(imageName, "drawable", context.getPackageName()) : 0;
+
         if (imageResId != 0) {
             holder.image.setImageResource(imageResId);
         } else {
@@ -66,6 +79,15 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
             item.setNote(newNote);
             new FirestoreService().updateNote(item.getItemId(), newNote);
             NotificationHelper.showNotification(context, "Kedvencek frissítve", item.getTitle() + " megjegyzése mentve.");
+
+            if (!newNote.isEmpty()) {
+                holder.noteText.setText("Megjegyzés: " + newNote);
+                holder.noteText.setVisibility(View.VISIBLE);
+            } else {
+                holder.noteText.setVisibility(View.GONE);
+            }
+
+            holder.noteInput.setText("");
         });
 
         holder.deleteButton.setOnClickListener(v -> new AlertDialog.Builder(context)
@@ -80,6 +102,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
                 .setNegativeButton("Mégse", null)
                 .show());
     }
+
 
     @Override
     public int getItemCount() {
@@ -97,6 +120,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         EditText noteInput;
         ImageView image;
         Button saveNoteButton, deleteButton;
+        TextView noteText;
 
         public FavoriteViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -107,6 +131,8 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
             noteInput = itemView.findViewById(R.id.favNoteInput);
             saveNoteButton = itemView.findViewById(R.id.saveNoteButton);
             deleteButton = itemView.findViewById(R.id.deleteButton);
+            noteText = itemView.findViewById(R.id.favNoteText);
+
         }
     }
 }

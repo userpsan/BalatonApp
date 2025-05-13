@@ -3,6 +3,10 @@
     <style name="Base.Theme.BalatonApp" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/button_color</item>
+        <item name="colorPrimaryVariant">@color/button_color</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+
     </style>
 
     <style name="Theme.BalatonApp" parent="Base.Theme.BalatonApp" />

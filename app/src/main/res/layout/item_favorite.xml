@@ -26,7 +26,7 @@
                 android:text="@string/favorite_delete"
                 android:layout_marginStart="12dp"
                 android:backgroundTint="@color/yellow"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/button_color" />
         </LinearLayout>
 
         <ImageView
@@ -62,6 +62,14 @@
             android:text="@string/string"
             android:textColor="#444444"
             android:layout_marginTop="6dp" />
+        <TextView
+            android:id="@+id/favNoteText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#555555"
+            android:textStyle="italic"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
         <EditText
             android:id="@+id/favNoteInput"
             android:layout_width="match_parent"
